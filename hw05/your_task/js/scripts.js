@@ -107,7 +107,7 @@ const getAlbums = term => {
 
       for (e of data) {
         elem.innerHTML += `
-          <section class="album-card" id=${e.id}>
+          <section onclick="disp_album_tracks('${e.name}')" class="album-card" id=${e.id}>
             <div>
                 <img src="${e.image_url}">
                 <h3>${e.name}</h3>
@@ -119,6 +119,51 @@ const getAlbums = term => {
             </div>
           </section>
         `;
+      }
+    });
+};
+
+const disp_album_tracks = (name, img) => {
+  console.log(`
+        get tracks from spotify based on the search term
+        "${name}" and load them into the #tracks section
+        of the DOM...`);
+
+  const elem = document.querySelector("#tracks");
+  elem.innerHTML = "";
+  fetch(baseURL + "?type=track&q=" + name)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+
+      if (data.length == 0) {
+        document.querySelector("#tracks").innerHTML = `
+        <section class="track-item preview" data-preview-track=null>
+        <i class="fas play-track fa-play" aria-hidden="true"></i>
+        <div class="label">
+            <h3></h3>
+            <p>
+              No matching tracks found in Spotify Database.
+            </p>
+        </div>
+      </section>
+            `;
+      }
+
+      const first_five = data.albumslice(0, 5);
+      for (e of first_five) {
+        elem.innerHTML += `
+          <section onclick="playAudio('${e.artist.name}','${e.name}','${e.preview_url}','${e.album.image_url}')" class="track-item preview" data-preview-track="${e.preview_url}">
+            <img src="${e.album.image_url}">
+            <i class="fas play-track fa-play" aria-hidden="true"></i>
+            <div class="label">
+              <h3>${e.name}</h3>
+              <p>
+                ${e.artist.name}
+              </p>
+            </div>
+          </section>
+          `;
       }
     });
 };
