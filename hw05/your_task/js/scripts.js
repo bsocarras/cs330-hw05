@@ -47,7 +47,7 @@ const getTracks = term => {
       const first_five = data.slice(0, 5);
       for (e of first_five) {
         elem.innerHTML += `
-          <section onclick="playAudio('${e.preview_url}')" class="track-item preview" data-preview-track="${e.preview_url}">
+          <section onclick="playAudio('${e.artist.name}','${e.name}','${e.preview_url}','${e.album.image_url}')" class="track-item preview" data-preview-track="${e.preview_url}">
             <img src="${e.album.image_url}">
             <i class="fas play-track fa-play" aria-hidden="true"></i>
             <div class="label">
@@ -62,10 +62,19 @@ const getTracks = term => {
     });
 };
 
-const playAudio = e => {
-  audioPlayer.setAudioFile(e);
+const playAudio = (aName, name, prev_url, img) => {
+  audioPlayer.setAudioFile(prev_url);
+  console.log("got here");
+  document.querySelector("footer .track-item").innerHTML = `
+    <img src=${img}>
+    <div class="label">
+      <h4>${name}</h3>
+      <p>
+        ${aName}
+      </p>
+    </div>
+  `;
   audioPlayer.play();
-  console.log("made it here");
 };
 
 const getAlbums = term => {
